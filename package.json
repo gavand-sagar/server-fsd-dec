@@ -10,6 +10,9 @@
   },
   "author": "'sagar <gavand.sagar.s@gmail.com>",
   "license": "ISC",
+  "engines": {
+    "node": ">=14 <15"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
