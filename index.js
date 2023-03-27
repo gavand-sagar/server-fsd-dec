@@ -8,12 +8,13 @@ import songRoutes from "./routes/songs/songs.js";
 import userRoutes from "./routes/users/users.js";
 import miscRoutes from "./routes/misc/misc.js";
 import thoughsRouter from "./routes/thoughts/thought.js";
+import signupRoutes from './routes/signup/singup.js'
 import dotenv from 'dotenv'
 import { authorizeFromDatabase as authorizeFromDatabase, authorizeFromToken } from "./auth-util.js";
 import mongo from "mongodb";
 dotenv.config();
 
-export function getUrl(){
+export function getUrl() {
   return process.env.CONNECTION_STRING
 }
 
@@ -44,6 +45,7 @@ app.use("/products", authorizeFromToken, productRoutes)
 app.use("/misc", miscRoutes)
 app.use("/thoughts", authorizeFromToken, thoughsRouter)
 app.use("/songs", songRoutes)
+app.use('/signup', signupRoutes)
 
 
 
