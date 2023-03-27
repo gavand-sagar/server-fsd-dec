@@ -1,17 +1,25 @@
 import { Router } from "express";
+import { upload } from "../../grid-fs.util.js";
+
+
 import { createItem, deleteSingleItem, getAllItems, getConnection, getPagedItems, getSingleItem } from "../../mongo-db-utillities.js";
 
 const songRoutes = Router();
 
 
 //create new song
-songRoutes.post('', (req, res) => {
-    let songObj = req.body;
-    createItem('songs', songObj)
-        .then(x => {
-            res.json(process.env.APPLICATION_NAME + " - Song Added")
-        })
-})
+songRoutes.post('',
+    upload.single('songImage'), // will upload the file in mongodb seporately
+    (req, res) => {
+        console.log(req.file)
+        const songObj = req.body;
+        let newFileName = req.file?.filename
+        songObj['songImage'] = newFileName
+        createItem('songs', songObj)
+            .then(x => {
+                res.json(process.env.APPLICATION_NAME + " - Song Added")
+            })
+    })
 
 //get all songs from database
 songRoutes.get('', (req, res) => {
