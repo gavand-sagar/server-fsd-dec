@@ -6,7 +6,7 @@ export function getConnection() {
     return sagarConnection;
 }
 
-export function getAllItems(collectionName,query) {
+export function getAllItems(collectionName, query) {
     return getConnection().connect().then(client => {
         const db = client.db(process.env.DEFAULT_DATABASE)
         return db.collection(collectionName)
@@ -62,13 +62,24 @@ export function updateSingleItem(collectionName, id, obj) {
 }
 
 
-export function getPagedItems(collectionName, noOfItems) {
+export function getPagedItems(collectionName, pageNumber, itemsPerPage) {
+
+    let skipValue = (pageNumber - 1) * itemsPerPage;
+
     return getConnection().connect().then(client => {
         const db = client.db(process.env.DEFAULT_DATABASE)
         return db.collection(collectionName)
             .aggregate([
-                { $limit: noOfItems }
+                { $skip: skipValue },
+                { $limit: Number(itemsPerPage) }
             ]).toArray()
     })
 }
 
+export function getCount(collectionName) {
+    return getConnection().connect().then(client => {
+        const db = client.db(process.env.DEFAULT_DATABASE)
+        return db.collection(collectionName)
+            .count({})
+    })
+}

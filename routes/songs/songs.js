@@ -2,7 +2,7 @@ import { Router } from "express";
 import { upload } from "../../grid-fs.util.js";
 
 
-import { createItem, deleteSingleItem, getAllItems, getConnection, getPagedItems, getSingleItem } from "../../mongo-db-utillities.js";
+import { createItem, deleteSingleItem, getAllItems, getConnection, getCount, getPagedItems, getSingleItem } from "../../mongo-db-utillities.js";
 
 const songRoutes = Router();
 
@@ -23,10 +23,28 @@ songRoutes.post('',
 
 //get all songs from database
 songRoutes.get('', (req, res) => {
-    getAllItems('songs')
-        .then(x => {
-            res.json(x)
-        })
+    let pageNumber = req.query.pageNumber;
+    let itemsPerPage = req.query.itemsPerPage
+    if (pageNumber) {
+        getPagedItems('songs', pageNumber, itemsPerPage)
+            .then(songs => {
+
+                getCount('songs').then(count => {
+                    res.json({
+                        total: count,
+                        pageNumber: Number(pageNumber),
+                        itemsPerPage: Number(itemsPerPage),
+                        items: songs
+                    })
+                })
+            })
+    } else {
+        getAllItems('songs')
+            .then(x => {
+                res.json(x)
+            })
+    }
+
 })
 
 
