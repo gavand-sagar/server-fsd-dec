@@ -12,6 +12,7 @@ import signupRoutes from './routes/signup/singup.js'
 import dotenv from 'dotenv'
 import { authorizeFromDatabase as authorizeFromDatabase, authorizeFromToken } from "./auth-util.js";
 import mongo from "mongodb";
+import { upload } from "./grid-fs.util.js";
 dotenv.config();
 
 export function getUrl() {
@@ -48,7 +49,9 @@ app.use("/songs", songRoutes)
 app.use('/signup', signupRoutes)
 
 
-
+app.post('/app-image-upload', upload.single('myFile'), (req, res) => {
+  res.json(x)
+})
 
 
 app.get('/image/:filename', (req, res) => {
