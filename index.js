@@ -50,7 +50,7 @@ app.use('/signup', signupRoutes)
 
 
 app.post('/app-image-upload', upload.single('myFile'), (req, res) => {
-  res.json(x)
+  res.json(req.file)
 })
 
 
