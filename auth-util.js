@@ -1,3 +1,4 @@
+import { generateJsonMessage } from "./commonHttpMessages.js"
 import { getAllItems } from "./mongo-db-utillities.js"
 import jwt from "jsonwebtoken"
 
@@ -13,7 +14,7 @@ export const authorizeFromDatabase = (req, res, next) => {
             next()
         } else {
             //send dummy response
-            res.json("Un Authorized")
+            res.json(generateJsonMessage("Un Authorized"))
         }
     })
 }
@@ -26,6 +27,6 @@ export const authorizeFromToken = (req, res, next) => {
         const result = jwt.verify(token, process.env.SECRETE_KEY);
         next()
     } catch {
-        return res.json("Un Authorized")
+        return res.json(generateJsonMessage("Un Authorized"))
     }
 }

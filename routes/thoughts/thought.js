@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { createItem, getAllItems } from "../../mongo-db-utillities.js";
+import { validateBody } from "../../validator.js";
+import { thoughtValidations } from "./thoughtsValidations.js";
 const thoughsRouter = Router();
 
 // to fetch all the thoughts objects from "thoughts.json"
@@ -11,7 +13,7 @@ thoughsRouter.get('', (req, res) => {
 })
 
 // to save a new object in "thoughts.json"  (post type is needed cuz its a standard)
-thoughsRouter.post('', (req, res) => {
+thoughsRouter.post('', validateBody(thoughtValidations), (req, res) => {
 
     let thoughtsObj = req.body;
 

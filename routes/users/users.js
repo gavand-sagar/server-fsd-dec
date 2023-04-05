@@ -19,13 +19,13 @@ userRoutes.get('/generate-token', (req, res) => {
 
 })
 
-userRoutes.get('/', (req, res) => {
-    getAllItems('users')
-        .then(x => {
-            return res.json(x)
+// userRoutes.get('/', (req, res) => {
+//     getAllItems('users')
+//         .then(x => {
+//             return res.json(x)
 
-        })
-})
+//         })
+// })
 
 export default userRoutes
 

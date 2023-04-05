@@ -1,47 +1,48 @@
 import { Router } from "express";
-import { upload } from "../../grid-fs.util.js";
-
 
 import { createItem, deleteSingleItem, getAllItems, getConnection, getCount, getPagedItems, getSingleItem } from "../../mongo-db-utillities.js";
+import { validateBody } from "../../validator.js";
+import { songValidations } from "./songsValidations.js";
+import { generateJsonMessage } from "../../commonHttpMessages.js";
 
 const songRoutes = Router();
 
 
 //create new song
 songRoutes.post('',
-    upload.single('songImage'), // will upload the file in mongodb seporately
+    validateBody(songValidations),
     (req, res) => {
-        console.log(req.file)
         const songObj = req.body;
-        let newFileName = req.file?.filename
-        songObj['songImage'] = newFileName
         createItem('songs', songObj)
             .then(x => {
-                res.json(process.env.APPLICATION_NAME + " - Song Added")
+                res.json(x)
             })
     })
 
 //get all songs from database
-songRoutes.get('', (req, res) => {
+songRoutes.get('',async (req, res) => {
     let pageNumber = req.query.pageNumber;
     let itemsPerPage = req.query.itemsPerPage
     if (pageNumber) {
-        getPagedItems('songs', pageNumber, itemsPerPage)
+        return getPagedItems('songs', pageNumber, itemsPerPage)
             .then(songs => {
 
-                getCount('songs').then(count => {
-                    res.json({
+                return getCount('songs').then(count => {
+                    return res.json({
                         total: count,
                         pageNumber: Number(pageNumber),
                         itemsPerPage: Number(itemsPerPage),
                         items: songs
                     })
                 })
+            }).catch(x=> {
+                // throw "custom error"
+                res.status(500).json(generateJsonMessage("error"))
             })
     } else {
-        getAllItems('songs')
+        return getAllItems('songs')
             .then(x => {
-                res.json(x)
+                return res.json(x)
             })
     }
 
@@ -79,12 +80,14 @@ songRoutes.delete('/:id', (req, res) => {
 
     deleteSingleItem('songs', id)
         .then(x => {
-            res.json("Deleted")
+            res.json(generateJsonMessage("Deleted"))
         })
         .catch(err => {
             res.json(err)
         })
 })
+
+
 
 
 

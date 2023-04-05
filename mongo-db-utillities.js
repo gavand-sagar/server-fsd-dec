@@ -62,7 +62,7 @@ export function updateSingleItem(collectionName, id, obj) {
 }
 
 
-export function getPagedItems(collectionName, pageNumber, itemsPerPage) {
+export async function getPagedItems(collectionName, pageNumber, itemsPerPage) {
 
     let skipValue = (pageNumber - 1) * itemsPerPage;
 

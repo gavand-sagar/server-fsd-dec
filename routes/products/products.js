@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { createItem, deleteSingleItem, getAllItems, getConnection, getSingleItem, updateSingleItem } from "../../mongo-db-utillities.js";
+import { generateJsonMessage } from "../../commonHttpMessages.js";
 
 const productRoutes = Router();
 
@@ -27,7 +28,7 @@ productRoutes.post('', (req, res) => {
 
     createItem('products', productObj)
         .then(x => {
-            res.json("product created")
+            res.json(generateJsonMessage("product created"))
         })
 
 })
@@ -39,7 +40,7 @@ productRoutes.put('/:id', (req, res) => {
 
     updateSingleItem('products', id, body)
         .then(x => {
-            req.json("product updated successfully.d")
+            req.json(generateJsonMessage("product updated successfully"))
         })
 })
 
@@ -50,7 +51,7 @@ productRoutes.delete('/:id', (req, res) => {
 
     deleteSingleItem('products', id)
         .then(x => {
-            res.json("product deleted")
+            res.json(generateJsonMessage("product deleted"))
         })
 
 })

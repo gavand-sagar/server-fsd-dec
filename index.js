@@ -39,6 +39,8 @@ async function createGridStream() {
 app.use(express.json())
 app.use(cors())
 
+
+
 app.use("/users", authorizeFromDatabase, userRoutes)
 
 
@@ -51,6 +53,7 @@ app.use('/signup', signupRoutes)
 
 app.post('/app-image-upload', upload.single('myFile'), (req, res) => {
   res.json(req.file)
+  
 })
 
 
@@ -70,11 +73,16 @@ app.get('/image/:filename', (req, res) => {
 });
 
 
+app.use("/",(err, req, res, next) => {                 
+  res.status(500).json({ Message: "Error Occurred!!" });
+});
+
 
 createGridStream().then(x => {
   bucket = x;
 
-  app.listen(3001, () => {
+  
+  app.listen(process.env.PORT || 3001, () => {
     console.log("Server started");
   });
 
