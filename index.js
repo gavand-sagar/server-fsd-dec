@@ -1,8 +1,6 @@
 
 import express from "express";
-import fs from 'fs'
 import cors from 'cors'
-
 import productRoutes from "./routes/products/products.js";
 import songRoutes from "./routes/songs/songs.js";
 import userRoutes from "./routes/users/users.js";
@@ -13,6 +11,8 @@ import dotenv from 'dotenv'
 import { authorizeFromDatabase as authorizeFromDatabase, authorizeFromToken } from "./auth-util.js";
 import mongo from "mongodb";
 import { upload } from "./grid-fs.util.js";
+import messageRoutes from "./routes/messages/messages.js";
+import wssEvents from "./web-socket-events.js";
 dotenv.config();
 
 export function getUrl() {
@@ -49,11 +49,12 @@ app.use("/misc", miscRoutes)
 app.use("/thoughts", authorizeFromToken, thoughsRouter)
 app.use("/songs", songRoutes)
 app.use('/signup', signupRoutes)
+app.use('/messages', authorizeFromToken, messageRoutes)
 
 
 app.post('/app-image-upload', upload.single('myFile'), (req, res) => {
   res.json(req.file)
-  
+
 })
 
 
@@ -73,19 +74,28 @@ app.get('/image/:filename', (req, res) => {
 });
 
 
-app.use("/",(err, req, res, next) => {                 
+app.use("/", (err, req, res, next) => {
   res.status(500).json({ Message: "Error Occurred!!" });
 });
 
-
+var server;
 createGridStream().then(x => {
   bucket = x;
 
-  
-  app.listen(process.env.PORT || 3001, () => {
+
+  server = app.listen(process.env.PORT || 3001, () => {
+
+    wssEvents.emit('start-web-socket', server)
     console.log("Server started");
   });
 
+
 })
+
+
+// app.on('listening',()=>{
+
+// })
+
 
 

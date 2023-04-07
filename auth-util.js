@@ -25,6 +25,7 @@ export const authorizeFromToken = (req, res, next) => {
 
     try {
         const result = jwt.verify(token, process.env.SECRETE_KEY);
+        req.headers.userObject = result
         next()
     } catch {
         return res.json(generateJsonMessage("Un Authorized"))
