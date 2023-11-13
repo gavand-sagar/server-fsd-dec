@@ -13,6 +13,7 @@ import mongo from "mongodb";
 import { upload } from "./grid-fs.util.js";
 import messageRoutes from "./routes/messages/messages.js";
 import wssEvents from "./web-socket-events.js";
+import axios from "axios";
 dotenv.config();
 
 export function getUrl() {
@@ -73,6 +74,10 @@ app.get('/image/:filename', (req, res) => {
   });
 });
 
+app.get('/health', (req, res) => {
+  res.json({ok:true})
+});
+
 
 app.use("/", (err, req, res, next) => {
   res.status(500).json({ Message: "Error Occurred!!" });
@@ -87,15 +92,20 @@ createGridStream().then(x => {
 
     wssEvents.emit('start-web-socket', server)
     console.log("Server started");
+    setInterval(()=>{
+        axios.get(process.env.SERVER_URL + '/health').then(()=>{
+          console.log('Server is active...', new Date().toISOString())
+        }).catch(e=>{
+          console.log("Eror in health check",e)
+        })
+    },Number(process.env.KEEP_ALIVE_INTERVAL || "300000"))
   });
+
+  
 
 
 })
 
-
-// app.on('listening',()=>{
-
-// })
 
 
 
