@@ -74,6 +74,13 @@ app.get('/image/:filename', (req, res) => {
   });
 });
 
+app.get('/files', authorizeFromToken , (req, res) => {
+  bucket.find().toArray().then((files) => {
+    // Check if files
+    return res.json(files)
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({ok:true})
 });

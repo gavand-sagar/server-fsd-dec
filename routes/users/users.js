@@ -9,10 +9,15 @@ userRoutes.get('/generate-token', (req, res) => {
         username: req.headers.name
     }
 
-    getAllItems('users', { username: req.headers.name }).then(allusers => {
-        let user = allusers[0]
-        let token = jwt.sign(obj, process.env.SECRETE_KEY, { expiresIn: process.env.TOKEN_EXPIRES_IN })
-        return res.json({ token: token, avatar: user.avatar })
+    getAllItems('users', { username: req.headers.name,password:req.headers.pass }).then(allusers => {
+        if(allusers && allusers.length > 0){
+            let user = allusers[0]
+            let token = jwt.sign(obj, process.env.SECRETE_KEY, { expiresIn: process.env.TOKEN_EXPIRES_IN })
+            return res.json({ token: token, avatar: user.avatar })
+        }else{
+            return res.json({ token: "" })
+        }
+        
     })
 
     // generate a token
